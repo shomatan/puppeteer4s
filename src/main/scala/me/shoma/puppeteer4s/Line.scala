@@ -13,8 +13,8 @@ case class Browser() extends Line {
 }
 
 class ReturnSyntax(line: Line) extends Line {
-  override def lines = line.lines.init :+ this :+ line.lines.last
-  override def compile = "return"
+  override def lines = line.lines.init :+ this
+  override def compile = "return " + line.compile
 }
 
 class Page(browser: Browser) extends Line {
@@ -50,7 +50,8 @@ case class Function(line: Line) extends Line {
       |async function run() {
       |  ${line.lines.map(_.compile).mkString("\n  ")}
       |}
-    """.stripMargin
+    """.
+      stripMargin
 }
 
 object App extends App {
@@ -63,4 +64,14 @@ object App extends App {
   val sourceCode = Function(program).compile
 
   println(sourceCode)
+
+  /* Results
+
+  async function run() {
+    const browser = await puppeteer.launch();
+    const page = await browser.newPage();
+    return await page.evaluate(() => document.body.innerHTML);
+  }
+
+   */
 }
