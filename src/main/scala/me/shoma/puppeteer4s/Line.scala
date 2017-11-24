@@ -43,7 +43,7 @@ case class Function(line: Line) extends Line {
   override def compile: String =
     s"""
       |async function run() {
-      |  ${line.lines.map(_.compile).mkString("\n  ")}
+      |  ${lines.map(_.compile).mkString("\n  ")}
       |}
     """.
       stripMargin
