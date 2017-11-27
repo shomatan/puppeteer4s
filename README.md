@@ -1,1 +1,3 @@
-# scala-headless-browser
+# puppeteer4s
+
+WIP

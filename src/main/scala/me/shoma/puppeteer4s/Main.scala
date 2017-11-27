@@ -10,7 +10,7 @@ case class Browser() extends Line {
   def newPage(): Page = new Page(this, lines)
 
   override def lines = Seq(this)
-  override def compile: String = "const browser = await puppeteer.launch();"
+  override def compile: String = "const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});"
 }
 
 class ReturnSyntax(line: Line) extends Line {

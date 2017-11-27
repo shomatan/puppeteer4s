@@ -1,4 +1,4 @@
-name := "scala-headless-browser"
+name := "puppeteer4s"
 
 organization := "shoma.me"
 
