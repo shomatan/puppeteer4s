@@ -1,5 +1,20 @@
 package me.shoma.puppeteer4s
 
+trait Expr {
+  def compile: String
+}
+
+case class Sentence(leftExpr: LeftExpr, operator: Operator, rightExpr: RightExpr) extends Expr {
+  override def compile: String = s"${leftExpr.compile}${operator.compile}${rightExpr.compile};"
+}
+
+case class LeftExpr(declaration: Declaration, variable: Variable) extends Expr {
+  override def compile: String = s"${declaration.compile} ${variable.compile}"
+}
+
+case class RightExpr(declaration: Declaration, process: String) extends Expr {
+  override def compile: String = s"${declaration.compile} $process"
+}
 
 trait Line {
   def lines: Seq[Line]
@@ -7,10 +22,15 @@ trait Line {
 }
 
 case class Browser() extends Line {
+
+  val leftExpr: LeftExpr      = LeftExpr(Const, Variable("browser"))
+  val operator: EqualOp.type  = EqualOp
+  val rightExpr: RightExpr    = RightExpr(Await, "puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']})")
+
   def newPage(): Page = new Page(this, lines)
 
   override def lines = Seq(this)
-  override def compile: String = "const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});"
+  override def compile: String = Sentence(leftExpr, operator, rightExpr).compile
 }
 
 class ReturnSyntax(line: Line) extends Line {
