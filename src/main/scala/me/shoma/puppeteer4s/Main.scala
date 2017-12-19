@@ -84,7 +84,7 @@ object App extends App {
   /* Results
 
   async function run() {
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']});
     const page = await browser.newPage();
     await page.goto('https://www.google.com');
     await page.screenshot({path: 'test.png', fullPage: true});
