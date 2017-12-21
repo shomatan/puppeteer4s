@@ -21,11 +21,19 @@ trait Line {
   def compile: String
 }
 
+class Array(val arrayName: String, val values: Seq[String]) extends Variable(arrayName) {
+
+  private val argsToString = values.map(s => s"'$s'").mkString(", ")
+
+  override def compile: String = super.compile + s": [$argsToString]"
+}
+
 case class Browser() extends Line {
 
-  val leftExpr: LeftExpr      = LeftExpr(Const, Variable("browser"))
-  val operator: EqualOp.type  = EqualOp
-  val rightExpr: RightExpr    = RightExpr(Await, "puppeteer.launch({args: ['--no-sandbox', '--disable-setuid-sandbox']})")
+  private val leftExpr  = LeftExpr(Const, Variable("browser"))
+  private val operator  = EqualOp
+  private val puppeteer = Puppeteer().launch(Seq("--no-sandbox", "--disable-setuid-sandbox"))
+  private val rightExpr = RightExpr(Await, puppeteer.compile)
 
   def newPage(): Page = new Page(this, lines)
 
